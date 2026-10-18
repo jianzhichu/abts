@@ -91,7 +91,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                   const SizedBox(height: 26),
                   const Text(
-                    '阿B听书',
+                    '中学生课外阅读版',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
@@ -101,7 +101,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    '把有声小说装进一个专注「听」的播放器',
+                    '名著、历史、科普与成长类有声阅读',
                     style: TextStyle(
                       fontSize: 12,
                       color: AppTheme.accentIce.withValues(alpha: 0.7),

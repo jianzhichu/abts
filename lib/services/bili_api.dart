@@ -41,32 +41,52 @@ class BiliApi {
 
   /// 明显不是听书内容的特征词（漫推/解说/鬼畜等）
   static const _noiseHints = <String>[
-    '一口气看完', '漫推', '漫画', '解说', '讲解', '解读', '动画', '鬼畜', '混剪',
+    '一口气看完', '漫推', '漫画', '解说', '动画', '鬼畜', '混剪',
     '沙雕', '速看', 'reaction', '预告', '游戏实况', '配音秀',
+  ];
+
+  /// 明确偏离中学生课外阅读定位的内容词。该规则用于收窄结果，不能替代人工内容审核。
+  static const _studentContentNoiseHints = <String>[
+    '恐怖', '灵异', '惊悚', '鬼故事', '恐怖故事', '午夜怪谈', '盗墓笔记', '鬼吹灯',
+    '十宗罪', '心理罪', '成人向', '成人小说', '情色', '色情', '耽美', '霸总', '虐恋',
+    '宫斗', '玄幻', '仙侠', '修仙', '评书', '相声', '漫改', '广播剧',
+  ];
+
+  /// 正向题材词：作品标题或简介至少命中一项，避免普通娱乐听书混进来。
+  static const _studentTopicHints = <String>[
+    '名著', '经典文学', '四大名著', '西游记', '三国演义', '红楼梦', '水浒传',
+    '骆驼祥子', '鲁滨逊漂流记', '简爱', '朝花夕拾', '钢铁是怎样炼成', '红星照耀中国',
+    '傅雷家书', '童年', '昆虫记', '海底两万里', '十万个为什么', '中华上下五千年',
+    '岳飞传', '史记', '平凡的世界', '历史', '传记', '人物故事', '科普', '科学', '自然',
+    '成长', '校园', '古诗', '唐诗三百首', '论语', '文言文', '古文', '传统文化', '国学',
+    '散文', '诗词', '世界名著',
   ];
 
   static bool _hasAudioHint(String s) => _audioHints.any(s.contains);
 
-  /// 题材词：搜索词本身是这些题材时，长内容按听书放行（如「评书 单田芳」）
+  /// 阅读与朗读类关键词：长内容可按有声读物放行。
   static const _genreHints = <String>[
-    '评书', '相声', '广播剧', '听书', '演播', '朗读', '诵读', '长书', '连播',
-    '说书', '单口', '播讲',
+    '听书', '演播', '朗读', '诵读', '长书', '连播', '播讲', '讲读',
   ];
 
   /// B 站「动态漫.广播剧」分区（听书内容主分区）
   static const _audioTypeId = 195;
 
-  /// 只保留有声小说/听书类内容。
+  /// 只保留适合中学生课外阅读方向的有声内容候选。
   ///
   /// 判定优先级（命中噪音词一律剔除）：
   /// 1. 标题含听书特征词且 >= 5 分钟；
   /// 2. 听书主分区（195 动态漫.广播剧）且 >= 10 分钟；
   /// 3. 简介/标签含听书特征词且 >= 30 分钟（防止蹭标签的短视频）；
-  /// 4. 搜索词本身是听书题材（评书/相声…）且 >= 30 分钟。
+  /// 4. 搜索词属于课外阅读主题，且长内容符合听书特征。
   static bool _isAudiobookItem(Map<String, dynamic> m, String keyword) {
     final title = '${m['title'] ?? ''}';
     final meta = '${m['description'] ?? ''} ${m['tag'] ?? ''}';
     if (_noiseHints.any('$title $meta'.contains)) return false;
+    if (_studentContentNoiseHints.any('$title $meta $keyword'.contains)) {
+      return false;
+    }
+    if (!_studentTopicHints.any('$title $meta'.contains)) return false;
 
     final seconds = Book.parseDurationSeconds(m['duration']);
     if (_hasAudioHint(title) && seconds >= 300) return true;
@@ -148,7 +168,7 @@ class BiliApi {
     }
   }
 
-  /// 搜索（只返回有声小说）
+  /// 搜索中学生课外阅读相关的有声内容。
   ///
   /// 先用原关键词搜（标题相关性最好），命中太少时再用
   /// 「关键词 有声小说」补搜一次并合并去重。
@@ -191,31 +211,19 @@ class BiliApi {
     return primary;
   }
 
-  /// 热门推荐（榜单）：有声小说按播放量排序，翻页凑量 + 按标题去重
-  Future<List<Book>> rankHotNovel({int limit = 30}) async {
-    final all = <Book>[];
-    for (var page = 1; page <= 2; page++) {
-      try {
-        final list = await _searchRaw(
-          '有声小说',
-          page: page,
-          pageSize: 20,
-          order: 'click',
-        );
-        all.addAll(list);
-        if (list.isEmpty) break;
-      } catch (_) {
-        break;
-      }
+  /// 精选阅读：按播放量搜索学生课外阅读相关的有声内容。
+  Future<List<Book>> rankStudentReading({int limit = 30}) async {
+    try {
+      final results = await _searchRaw(
+        '中学生名著经典 有声书',
+        pageSize: limit,
+        order: 'click',
+      );
+      final seen = <String>{};
+      return results.where((b) => seen.add(b.cleanTitle)).take(limit).toList();
+    } catch (_) {
+      return [];
     }
-    final seen = <String>{};
-    final out = <Book>[];
-    for (final b in all) {
-      if (!seen.add(b.cleanTitle)) continue;
-      out.add(b);
-      if (out.length >= limit) break;
-    }
-    return out;
   }
 
   /// 书籍详情（含分P章节）

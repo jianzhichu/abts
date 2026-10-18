@@ -1,5 +1,5 @@
 name: abts
-description: "阿B听书：专注收听有声小说的 Flutter 播放器（搜索、分P连播、断点续播、后台播放、锁屏控制、睡眠定时）"
+description: "中学生课外阅读版：名著、历史、科普与成长类有声阅读播放器"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

@@ -330,7 +330,7 @@ class _SearchPageState extends State<SearchPage> {
                   onSubmitted: (_) => _search(),
                   style: TextStyle(fontSize: 15, color: AppTheme.textMain),
                   decoration: InputDecoration(
-                    hintText: '搜索书名 / 作者 / 主播',
+                    hintText: '搜索书名 / 作品主题 / 作者',
                     hintStyle: TextStyle(
                         fontSize: 14, color: AppTheme.textHint),
                     prefixIcon: Icon(Icons.manage_search_rounded,

@@ -15,7 +15,7 @@ import 'cache_page.dart';
 import 'player_page.dart';
 import 'search_page.dart';
 
-/// 发现：分类浏览（热门/广播剧/评书…）+ 搜索入口 + 精选推荐兜底
+/// 发现：中学生课外阅读分类、主题入口与搜索。
 /// 搜索跳转到独立搜索页（支持分页）
 class DiscoverPage extends StatefulWidget {
   const DiscoverPage({super.key});
@@ -74,9 +74,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
     try {
       // 错开自动请求，降低被风控的概率
       await Future<void>.delayed(const Duration(milliseconds: 500));
-      // 热门推荐：有声小说按播放量排序的榜单；其余分类走关键词搜索
+      // 精选阅读使用学生课外阅读关键词；其余分类使用各自的主题关键词。
       final list = catIndex == 0
-          ? await _bili.rankHotNovel()
+          ? await _bili.rankStudentReading()
           : await _bili.search(cat.keyword);
       if (!mounted) return;
       _browseCache[catIndex] = list;
@@ -264,7 +264,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         ..._buildOfflineSection(),
       ] else if (_browseBooks.isNotEmpty)
         ..._buildRealResults(cat),
-      ..._buildAnchorsSection(cat),
+          ..._buildReadingTopicsSection(cat),
     ];
   }
 
@@ -369,7 +369,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
   /// 「更多」：把分类关键词带进搜索页，可继续翻页看全部结果
   void _openMore(DiscoverCategory cat) {
-    final kw = _cat == 0 ? '有声小说' : cat.keyword;
+    final kw = cat.keyword;
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => SearchPage(initialKeyword: kw, autofocus: false),
@@ -377,17 +377,17 @@ class _DiscoverPageState extends State<DiscoverPage> {
     );
   }
 
-  /// 精选主播：点击查看该主播相关的有声小说（进入独立搜索页）
-  List<Widget> _buildAnchorsSection(DiscoverCategory cat) {
+  /// 阅读主题：点击查看该主题的有声内容。
+  List<Widget> _buildReadingTopicsSection(DiscoverCategory cat) {
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(4, 8, 4, 10),
         child: Row(
           children: [
-            Icon(Icons.mic_rounded, size: 18, color: AppTheme.accent),
+            Icon(Icons.auto_stories_rounded, size: 18, color: AppTheme.accent),
             const SizedBox(width: 6),
             Text(
-              '精选主播',
+              '阅读主题',
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
@@ -396,7 +396,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
             ),
             const Spacer(),
             Text(
-              '点击查看 TA 的作品',
+              '点击浏览相关内容',
               style: TextStyle(fontSize: 11, color: AppTheme.textHint),
             ),
           ],
@@ -407,13 +407,13 @@ class _DiscoverPageState extends State<DiscoverPage> {
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 4),
-          itemCount: cat.anchors.length,
+          itemCount: cat.picks.length,
           separatorBuilder: (_, _) => const SizedBox(width: 16),
           itemBuilder: (context, i) {
-            final a = cat.anchors[i];
-            return _AnchorTile(
-              anchor: a,
-              onTap: () => _openSearch(a.keyword),
+            final pick = cat.picks[i];
+            return _ReadingPickTile(
+              pick: pick,
+              onTap: () => _openSearch(pick.keyword),
             );
           },
         ),
@@ -429,16 +429,16 @@ class _DiscoverPageState extends State<DiscoverPage> {
   }
 }
 
-/// 精选主播卡片：圆形头像 + 名字 + 代表作（无网络依赖）
-class _AnchorTile extends StatelessWidget {
-  final AnchorPick anchor;
+/// 阅读主题卡片。
+class _ReadingPickTile extends StatelessWidget {
+  final ReadingPick pick;
   final VoidCallback onTap;
 
-  const _AnchorTile({required this.anchor, required this.onTap});
+  const _ReadingPickTile({required this.pick, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    final a = anchor;
+    final a = pick;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),

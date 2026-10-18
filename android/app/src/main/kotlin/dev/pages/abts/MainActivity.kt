@@ -338,7 +338,7 @@ class MainActivity : AudioServiceActivity() {
                     put(android.provider.MediaStore.Images.Media.MIME_TYPE, "image/png")
                     put(
                         android.provider.MediaStore.Images.Media.RELATIVE_PATH,
-                        "Pictures/阿B听书",
+                        "Pictures/中学生课外阅读版",
                     )
                     put(android.provider.MediaStore.Images.Media.IS_PENDING, 1)
                 }
@@ -359,7 +359,7 @@ class MainActivity : AudioServiceActivity() {
                     android.os.Environment.getExternalStoragePublicDirectory(
                         android.os.Environment.DIRECTORY_PICTURES,
                     ),
-                    "阿B听书",
+                    "中学生课外阅读版",
                 )
                 if (!dir.exists() && !dir.mkdirs()) return null
                 val file = java.io.File(dir, fileName)

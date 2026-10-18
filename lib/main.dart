@@ -65,8 +65,8 @@ Future<void> _bootstrap() async {
       builder: () => BiliAudioHandler(),
       config: const AudioServiceConfig(
         androidNotificationChannelId: 'dev.pages.abts.channel.audio',
-        androidNotificationChannelName: '阿B听书',
-        androidNotificationChannelDescription: '播放有声小说',
+        androidNotificationChannelName: '中学生课外阅读版',
+        androidNotificationChannelDescription: '播放课外阅读内容',
         androidNotificationIcon: 'mipmap/ic_launcher',
         // 暂停（含来电打断）时保留前台服务与通知，避免打断后通知栏直接消失。
         // 注意：audio_service 要求此时 androidNotificationOngoing 必须为 false。
@@ -149,7 +149,7 @@ class _AbTingShuAppState extends State<AbTingShuApp>
         builder: (context, _) {
           AppTheme.mode = tc.mode;
           return MaterialApp(
-            title: '阿B听书',
+            title: '中学生课外阅读版',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.light(),
             darkTheme: AppTheme.dark(),

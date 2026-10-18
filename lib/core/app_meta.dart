@@ -5,11 +5,11 @@
 class AppMeta {
   AppMeta._();
 
-  static const String name = '阿B听书';
+  static const String name = '中学生课外阅读版';
   static const String version = '1.2.0';
 
   /// 副标题 / 一句话介绍
-  static const String tagline = '免登录、无广告、专注收听的 B 站有声小说播放器';
+  static const String tagline = '面向中学生的名著、历史、科普与成长类有声阅读';
 
   /// 开源仓库
   static const String repoUrl = 'https://github.com/fengqiao57/abts';

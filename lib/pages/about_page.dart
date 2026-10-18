@@ -90,7 +90,7 @@ class AboutPage extends StatelessWidget {
   /// 一句话讲清它是干什么的
   Widget _buildIntro(BuildContext context) {
     const points = [
-      '面向中学生的名著、历史、科普与成长类课外阅读',
+      '中外名著与课外阅读有声播放器',
       '不登录也能用，没有广告、没有会员、没有弹窗',
       '为长时间收听优化：倍速、断点续播、离线缓存、后台与锁屏控制',
     ];

@@ -35,8 +35,8 @@ class DiscoverSeeds {
 
   static const List<DiscoverCategory> categories = [
     DiscoverCategory(
-      label: '精选阅读',
-      keyword: '中学生课外阅读 有声书',
+      label: '中外名著',
+      keyword: '中外名著 有声书',
       icon: Icons.auto_stories_rounded,
       picks: [
         ReadingPick(
@@ -47,7 +47,7 @@ class DiscoverSeeds {
         ),
         ReadingPick(
           name: '中国经典',
-          works: '红楼梦 · 骆驼祥子',
+          works: '红楼梦 · 水浒传',
           keyword: '中国文学名著 有声书',
           color: Color(0xFF2E6B4E),
         ),
@@ -60,8 +60,8 @@ class DiscoverSeeds {
       ],
     ),
     DiscoverCategory(
-      label: '名著经典',
-      keyword: '中学必读名著 有声书',
+      label: '中国名著',
+      keyword: '中国名著 有声书',
       icon: Icons.menu_book_rounded,
       picks: [
         ReadingPick(
@@ -77,10 +77,59 @@ class DiscoverSeeds {
           color: Color(0xFF4E6B8F),
         ),
         ReadingPick(
+          name: '朝花夕拾',
+          works: '鲁迅 · 散文集',
+          keyword: '朝花夕拾 有声书 全集',
+          color: Color(0xFF3B8F6B),
+        ),
+        ReadingPick(
+          name: '儒林外史',
+          works: '吴敬梓 · 古典讽刺小说',
+          keyword: '儒林外史 有声书',
+          color: Color(0xFF8F4E8F),
+        ),
+        ReadingPick(
+          name: '聊斋志异',
+          works: '蒲松龄 · 文言短篇小说',
+          keyword: '聊斋志异 有声书',
+          color: Color(0xFF4E6B4E),
+        ),
+      ],
+    ),
+    DiscoverCategory(
+      label: '外国名著',
+      keyword: '外国文学名著 有声书',
+      icon: Icons.public_rounded,
+      picks: [
+        ReadingPick(
+          name: '简爱',
+          works: '夏洛蒂·勃朗特',
+          keyword: '简爱 有声书 全集',
+          color: Color(0xFF8F4E8F),
+        ),
+        ReadingPick(
           name: '鲁滨逊漂流记',
-          works: '笛福 · 世界名著',
+          works: '笛福 · 冒险小说',
           keyword: '鲁滨逊漂流记 有声书',
           color: Color(0xFF3B8F6B),
+        ),
+        ReadingPick(
+          name: '格列佛游记',
+          works: '斯威夫特 · 讽刺小说',
+          keyword: '格列佛游记 有声书',
+          color: Color(0xFF3B6BB2),
+        ),
+        ReadingPick(
+          name: '海底两万里',
+          works: '儒勒·凡尔纳 · 科幻经典',
+          keyword: '海底两万里 有声书',
+          color: Color(0xFF2E8F8F),
+        ),
+        ReadingPick(
+          name: '童年',
+          works: '高尔基 · 自传体小说',
+          keyword: '高尔基 童年 有声书',
+          color: Color(0xFFB26B3B),
         ),
       ],
     ),
@@ -188,11 +237,11 @@ class DiscoverSeeds {
 
   static const List<String> hotKeys = [
     '西游记 有声书',
-    '骆驼祥子 有声书',
-    '中华上下五千年',
-    '青少年科普 有声读物',
-    '中学生必背古诗词',
+    '红楼梦 有声书',
+    '简爱 有声书',
     '鲁滨逊漂流记 有声书',
+    '朝花夕拾 有声书',
+    '海底两万里 有声书',
   ];
 }
 

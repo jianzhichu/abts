@@ -45,21 +45,9 @@ class BiliApi {
     '沙雕', '速看', 'reaction', '预告', '游戏实况', '配音秀',
   ];
 
-  /// 明确偏离中学生课外阅读定位的内容词。该规则用于收窄结果，不能替代人工内容审核。
+  /// 只过滤明确成人或露骨内容；题材本身不作为排除条件。
   static const _studentContentNoiseHints = <String>[
-    '恐怖', '灵异', '惊悚', '鬼故事', '恐怖故事', '午夜怪谈', '盗墓笔记', '鬼吹灯',
-    '十宗罪', '心理罪', '成人向', '成人小说', '情色', '色情', '耽美', '霸总', '虐恋',
-    '宫斗', '玄幻', '仙侠', '修仙', '评书', '相声', '漫改', '广播剧',
-  ];
-
-  /// 正向题材词：作品标题或简介至少命中一项，避免普通娱乐听书混进来。
-  static const _studentTopicHints = <String>[
-    '名著', '经典文学', '四大名著', '西游记', '三国演义', '红楼梦', '水浒传',
-    '骆驼祥子', '鲁滨逊漂流记', '简爱', '朝花夕拾', '钢铁是怎样炼成', '红星照耀中国',
-    '傅雷家书', '童年', '昆虫记', '海底两万里', '十万个为什么', '中华上下五千年',
-    '岳飞传', '史记', '平凡的世界', '历史', '传记', '人物故事', '科普', '科学', '自然',
-    '成长', '校园', '古诗', '唐诗三百首', '论语', '文言文', '古文', '传统文化', '国学',
-    '散文', '诗词', '世界名著',
+    '成人向', '成人小说', '情色', '色情', '18禁', '18+', '擦边', '露骨',
   ];
 
   static bool _hasAudioHint(String s) => _audioHints.any(s.contains);
@@ -72,13 +60,13 @@ class BiliApi {
   /// B 站「动态漫.广播剧」分区（听书内容主分区）
   static const _audioTypeId = 195;
 
-  /// 只保留适合中学生课外阅读方向的有声内容候选。
+  /// 保留有声内容，排除明显短视频噪音与成人露骨内容。
   ///
   /// 判定优先级（命中噪音词一律剔除）：
   /// 1. 标题含听书特征词且 >= 5 分钟；
   /// 2. 听书主分区（195 动态漫.广播剧）且 >= 10 分钟；
   /// 3. 简介/标签含听书特征词且 >= 30 分钟（防止蹭标签的短视频）；
-  /// 4. 搜索词属于课外阅读主题，且长内容符合听书特征。
+  /// 4. 搜索词属于朗读/听书题材，且长内容符合有声读物特征。
   static bool _isAudiobookItem(Map<String, dynamic> m, String keyword) {
     final title = '${m['title'] ?? ''}';
     final meta = '${m['description'] ?? ''} ${m['tag'] ?? ''}';
@@ -86,7 +74,6 @@ class BiliApi {
     if (_studentContentNoiseHints.any('$title $meta $keyword'.contains)) {
       return false;
     }
-    if (!_studentTopicHints.any('$title $meta'.contains)) return false;
 
     final seconds = Book.parseDurationSeconds(m['duration']);
     if (_hasAudioHint(title) && seconds >= 300) return true;
@@ -211,11 +198,11 @@ class BiliApi {
     return primary;
   }
 
-  /// 精选阅读：按播放量搜索学生课外阅读相关的有声内容。
+  /// 中外名著：按播放量搜索相关有声内容。
   Future<List<Book>> rankStudentReading({int limit = 30}) async {
     try {
       final results = await _searchRaw(
-        '中学生名著经典 有声书',
+        '中外名著 有声书',
         pageSize: limit,
         order: 'click',
       );

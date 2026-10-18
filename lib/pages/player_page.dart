@@ -155,7 +155,7 @@ class _PlayerPageState extends State<PlayerPage> {
       await SharePlus.instance.share(
         ShareParams(
           subject: b.cleanTitle,
-          text: '我在「中学生课外阅读版」收听《${b.cleanTitle}》\n$url',
+          text: '我在「阿B听书（学生版）」收听《${b.cleanTitle}》\n$url',
         ),
       );
     } catch (e) {
